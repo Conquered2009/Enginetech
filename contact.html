@@ -16,6 +16,7 @@
     <div class="logo-sub">Nigeria Limited</div>
   </a>
   <ul class="nav-links">
+              <li><a href="/index.html" style="color: blue; border: 2px solid blue;">Home</a></li>
     <li><a href="/about.html">About</a></li>
     <li><a href="/services.html">Services</a></li>
     <li><a href="/projects.html">Projects</a></li>
@@ -68,41 +69,56 @@
   <div class="contact-right reveal visible">
     <div class="section-tag">Send a Message</div>
     <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:700;text-transform:uppercase;color:var(--white);margin-bottom:32px;">Project Enquiry</h3>
-    <div class="form-row">
-      <div class="form-group">
-        <label>First Name</label>
-        <input type="text" placeholder="John"/>
+
+    <!-- SUCCESS MESSAGE -->
+    <div id="form-success" style="display:none;background:rgba(212,175,55,0.15);border:1px solid var(--gold, #D4AF37);border-radius:8px;padding:20px 24px;margin-bottom:24px;color:var(--white);">
+      <strong style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;text-transform:uppercase;">Message Sent!</strong>
+      <p style="margin:6px 0 0;font-size:0.9rem;opacity:0.85;">Thank you for reaching out. We'll get back to you within one business day.</p>
+    </div>
+
+    <!-- ERROR MESSAGE -->
+    <div id="form-error" style="display:none;background:rgba(220,53,69,0.15);border:1px solid #dc3545;border-radius:8px;padding:20px 24px;margin-bottom:24px;color:var(--white);">
+      <strong style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;text-transform:uppercase;">Something went wrong</strong>
+      <p style="margin:6px 0 0;font-size:0.9rem;opacity:0.85;">Please try again or email us directly at info@intedeconigeria.com.</p>
+    </div>
+
+    <form id="enquiry-form" action="https://formspree.io/f/xaqdvzdg" method="POST" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" placeholder="John" required/>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" placeholder="Doe" required/>
+        </div>
       </div>
       <div class="form-group">
-        <label>Last Name</label>
-        <input type="text" placeholder="Doe"/>
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="john@company.com" required/>
       </div>
-    </div>
-    <div class="form-group">
-      <label>Email Address</label>
-      <input type="email" placeholder="john@company.com"/>
-    </div>
-    <div class="form-group">
-      <label>Company / Organization</label>
-      <input type="text" placeholder="Company Name"/>
-    </div>
-    <div class="form-group">
-      <label>Service Required</label>
-      <select>
-        <option value="">Select a service...</option>
-        <option>Electrical Engineering</option>
-        <option>Steel Fabrication</option>
-        <option>Civil & Mechanical Engineering</option>
-        <option>Environmental Services</option>
-        <option>Project Management</option>
-        <option>Other / Multiple</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Project Details</label>
-      <textarea placeholder="Briefly describe your project scope, timeline, and location..."></textarea>
-    </div>
-    <button class="btn-gold" style="width:100%;padding:16px;font-size:0.85rem;">Submit Enquiry →</button>
+      <div class="form-group">
+        <label>Company / Organization</label>
+        <input type="text" name="company" placeholder="Company Name"/>
+      </div>
+      <div class="form-group">
+        <label>Service Required</label>
+        <select name="service" required>
+          <option value="">Select a service...</option>
+          <option>Electrical Engineering</option>
+          <option>Steel Fabrication</option>
+          <option>Civil & Mechanical Engineering</option>
+          <option>Environmental Services</option>
+          <option>Project Management</option>
+          <option>Other / Multiple</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Project Details</label>
+        <textarea name="project_details" placeholder="Briefly describe your project scope, timeline, and location..."></textarea>
+      </div>
+      <button type="submit" class="btn-gold" id="submit-btn" style="width:100%;padding:16px;font-size:0.85rem;">Submit Enquiry →</button>
+    </form>
   </div>
 </section>
 
@@ -143,5 +159,59 @@
 </footer>
 
 <script type="module" src="/src/script.js"></script>
+
+<script>
+  const form = document.getElementById('enquiry-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const successMsg = document.getElementById('form-success');
+  const errorMsg = document.getElementById('form-error');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // Basic validation
+    const required = form.querySelectorAll('[required]');
+    let valid = true;
+    required.forEach(field => {
+      if (!field.value.trim()) {
+        field.style.borderColor = '#dc3545';
+        valid = false;
+      } else {
+        field.style.borderColor = '';
+      }
+    });
+    if (!valid) return;
+
+    // Loading state
+    submitBtn.textContent = 'Sending…';
+    submitBtn.disabled = true;
+    successMsg.style.display = 'none';
+    errorMsg.style.display = 'none';
+
+    try {
+      const data = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        form.reset();
+        successMsg.style.display = 'block';
+        successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        submitBtn.textContent = 'Submit Enquiry →';
+        submitBtn.disabled = false;
+      } else {
+        throw new Error('Server error');
+      }
+    } catch {
+      errorMsg.style.display = 'block';
+      submitBtn.textContent = 'Submit Enquiry →';
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+
 </body>
 </html>

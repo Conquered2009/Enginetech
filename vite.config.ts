@@ -6,7 +6,7 @@ import { defineConfig, loadEnv } from 'vite';
 
 // __dirname is not available in ESM — derive it from import.meta.url
 const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig(({ mode }) => {
   // Load env variables from the project root (all prefixes)
@@ -26,12 +26,12 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         input: {
-          main:       path.resolve(__dirname, 'index.html'),
-          about:      path.resolve(__dirname, 'about.html'),
-          services:   path.resolve(__dirname, 'services.html'),
-          projects:   path.resolve(__dirname, 'projects.html'),
+          main: path.resolve(__dirname, 'index.html'),
+          about: path.resolve(__dirname, 'about.html'),
+          services: path.resolve(__dirname, 'services.html'),
+          projects: path.resolve(__dirname, 'projects.html'),
           operations: path.resolve(__dirname, 'operations.html'), // was missing
-          contact:    path.resolve(__dirname, 'contact.html'),
+          contact: path.resolve(__dirname, 'contact.html'),
         },
       },
     },
